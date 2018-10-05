@@ -1,23 +1,14 @@
 package main
 
 import (
-	"fmt"
-	"log"
-	"os"
-	"path/filepath"
+	"encoding/base64"
 )
 
-// LsFiles ... list file in directory
-func LsFiles(pattern string) {
-	err := filepath.Walk(pattern,
-		func(path string, info os.FileInfo, err error) error {
-			if err != nil {
-				return err
-			}
-			fmt.Println(path, info.Size())
-			return nil
-		})
-	if err != nil {
-		log.Println(err)
-	}
+func Base64Encode(str string) string {
+	return base64.StdEncoding.EncodeToString([]byte(str))
+}
+
+func Base64Decode(str string) string {
+	data, _ := base64.StdEncoding.DecodeString(str)
+	return string(data)
 }
