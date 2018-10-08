@@ -3,6 +3,8 @@ package main
 import (
 	"flag"
 	"fmt"
+	_ "github.com/joho/godotenv/autoload"
+	"github.com/me-io/go-short-url/pkg/mongo"
 	"github.com/op/go-logging"
 	"net/http"
 	"os"
@@ -14,6 +16,8 @@ import (
 var (
 	host *string
 	port *int
+	mgo  *mongo.Client
+
 	// Logger ... Logger Driver
 	Logger = logging.MustGetLogger("go-short-url-server")
 
@@ -22,8 +26,8 @@ var (
 	)
 
 	routes = map[string]func(w http.ResponseWriter, r *http.Request){
-		`/shorten`:  Shorten,
-		`/r/`: Redirect,
+		`/shorten`: Shorten,
+		`/r/`:      Redirect,
 	}
 	_, filename, _, _ = runtime.Caller(0)
 	defaultStaticPath = filepath.Dir(filename) + `/public`
@@ -47,10 +51,16 @@ func init() {
 	staticPath = flag.String(`STATIC_PATH`, defaultStaticPath, `Webserver static path`)
 
 	flag.Parse()
+
+	// connect to database
+	mgo = initDb()
 }
 
 // main ... main function start the server
 func main() {
+
+	// disconnect connection to database
+	defer mgo.Disconnect()
 
 	Logger.Infof("host %s", *host)
 	Logger.Infof("port %d", *port)
@@ -92,4 +102,24 @@ func serveHTTP(host string, port int) {
 
 func handleStatic(mux *http.ServeMux) {
 	mux.Handle(`/static`, http.FileServer(http.Dir(*staticPath)))
+}
+
+func initDb() *mongo.Client {
+	config := &mongo.Config{
+		Host:     os.Getenv("MONGO_HOST"),
+		Port:     os.Getenv("MONGO_PORT"),
+		Database: os.Getenv("MONGO_DATABASE"),
+		Username: os.Getenv("MONGO_USERNAME"),
+		Password: os.Getenv("MONGO_PASSWORD"),
+		Options:  os.Getenv("MONGO_OPTS"),
+	}
+
+	client, err := mongo.Connect(config)
+	if err != nil {
+		Logger.Fatal(err.Error())
+	}
+
+	Logger.Info("Connection made to mongo database")
+
+	return client
 }

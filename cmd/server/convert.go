@@ -43,8 +43,8 @@ var Shorten = func(w http.ResponseWriter, r *http.Request) {
 	shortenRes := &shortenResObj{}
 	shortenRes.Link = r.Host + "/r/" + string(hash)
 	shortenRes.LongUrl = convertReq.Url
-	shortenRes.ExpireAt = time.Now().Add(time.Hour * time.Duration(24)).String()
-	shortenRes.CreatedAt = time.Now().String()
+	shortenRes.ExpireAt = time.Now().Add(time.Hour * 24).Format("2006-01-02 15:04:05")
+	shortenRes.CreatedAt = time.Now().Add(time.Hour * 24).Format("2006-01-02 15:04:05")
 
 	shortenJsonVal, err := json.Marshal(shortenRes)
 	if err != nil {
