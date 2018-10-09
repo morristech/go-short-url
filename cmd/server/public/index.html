@@ -1,8 +1,23 @@
 <html>
 <head>
+    <link rel="icon" href="assets/favicon.ico">
+    <link rel="stylesheet" href="assets/css/bootstrap.min.css">
 
+    <script src="assets/js/jquery-3.3.1.slim.min.js"></script>
+    <script src="assets/js/popper.min.js"></script>
+    <script src="assets/js/bootstrap.min.js"></script>
+    <script src="assets/js/angular.min.js"></script>
+    <script src="assets/js/app.js"></script>
 </head>
-<body>
-Hello Swap Server
+<body ng-app="short-url" ng-controller="mainCtrl">
+<div class="container mt-5">
+    <h1 class="display-4">URL Shortener</h1>
+    <p class="lead">Simplify your links</p>
+
+    <div class="shorten-form form-inline">
+        <input type="text" class="form-control w-75">
+        <button class="btn btn-primary ml-2">SHORTEN</button>
+    </div>
+</div>
 </body>
 </html>
