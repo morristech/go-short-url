@@ -37,16 +37,25 @@ var Shorten = func(w http.ResponseWriter, r *http.Request) {
 		Logger.Panic(err)
 	}
 
-	// generate hash from the given url
-	hash := Base64Encode(convertReq.Url)
+	// find last generated hash
+	result := mgo.FindOne("url", nil)
+	lastDoc := &Url{}
+	result.Decode(lastDoc)
 
-	shortenRes := &shortenResObj{}
-	shortenRes.Link = r.Host + "/r/" + string(hash)
-	shortenRes.LongUrl = convertReq.Url
-	shortenRes.ExpireAt = time.Now().Add(time.Hour * 24).Format("2006-01-02 15:04:05")
-	shortenRes.CreatedAt = time.Now().Add(time.Hour * 24).Format("2006-01-02 15:04:05")
+	// prepare new document
+	url := &Url{}
+	url.Link = GenerateHash(lastDoc.Link)
+	url.LongUrl = convertReq.Url
+	url.ExpireAt = time.Now().Add(time.Hour * 24)
+	url.CreatedAt = time.Now()
 
-	shortenJsonVal, err := json.Marshal(shortenRes)
+	// insert new documents
+	mgo.Create("url", url)
+
+	// update the link for response
+	url.Link = fmt.Sprintf("%s/r/%s", r.Host, url.Link)
+
+	shortenJsonVal, err := json.Marshal(url)
 	if err != nil {
 		Logger.Panic(err)
 	}
@@ -58,11 +67,31 @@ var Shorten = func(w http.ResponseWriter, r *http.Request) {
 }
 
 var Redirect = func(w http.ResponseWriter, r *http.Request) {
-	urlParts := strings.Split(r.URL.String(), "/")
+	urlParts := strings.Split(r.URL.String(), "r/")
 
-	redirectUrlHash := urlParts[len(urlParts)-1]
+	redirectLink := urlParts[len(urlParts)-1]
 
-	redirectUrl := Base64Decode(redirectUrlHash)
-	fmt.Println(redirectUrl)
-	http.Redirect(w, r, redirectUrl, 301)
+	if redirectLink == "" {
+		Logger.Panic("Invalid short url")
+	}
+
+	condition := make(map[string]string)
+	condition["link"] = redirectLink
+
+	result := mgo.FindOne("url", condition)
+
+	doc := &Url{}
+	result.Decode(doc)
+
+	if doc.Link != redirectLink {
+		Logger.Panic("Invalid short url")
+	}
+
+	// disable redirect cache
+	w.Header().Set("Cache-Control", "no-cache, private, max-age=0")
+	w.Header().Set("Expires", time.Unix(0, 0).Format(http.TimeFormat))
+	w.Header().Set("Pragma", "no-cache")
+	w.Header().Set("X-Accel-Expires", "0")
+
+	http.Redirect(w, r, doc.LongUrl, 301)
 }

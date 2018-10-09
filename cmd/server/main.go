@@ -36,6 +36,7 @@ var (
 
 // init ... init function of the server
 func init() {
+
 	// Logging
 	backendStderr := logging.NewLogBackend(os.Stderr, "", 0)
 	backendFormatted := logging.NewBackendFormatter(backendStderr, format)
