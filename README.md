@@ -14,8 +14,8 @@
 [![Pulls](https://shields.beevelop.com/docker/pulls/meio/go-short-url-server.svg?style=flat-square)](https://hub.docker.com/r/meio/go-short-url-server)
 
 ## TODO LIST
-- [ ] Shorten method
-- [ ] Redirect / method
+- [x] Shorten method
+- [x] Redirect / method
 - [ ] Option to request attributes "ip range, user agent"
 - [ ] Throttling and rate limiting " on creation and redirect " 
 - [ ] Expiry time
