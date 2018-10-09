@@ -39,7 +39,7 @@ var Shorten = func(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// find last generated hash
-	result := mgo.FindOne("url", nil)
+	result := mgo.FindOne(CollectionShortUrl, nil)
 	lastDoc := &Url{}
 	result.Decode(lastDoc)
 
@@ -51,7 +51,7 @@ var Shorten = func(w http.ResponseWriter, r *http.Request) {
 	url.CreatedAt = time.Now()
 
 	// insert new documents
-	mgo.Create("url", url)
+	mgo.Create(CollectionShortUrl, url)
 
 	// update the link for response
 	url.Link = fmt.Sprintf("%s/r/%s", r.Host, url.Link)
@@ -84,7 +84,7 @@ var Redirect = func(w http.ResponseWriter, r *http.Request) {
 		),
 	)
 
-	result := mgo.FindOne("url", query)
+	result := mgo.FindOne(CollectionShortUrl, query)
 
 	doc := &Url{}
 	result.Decode(doc)
