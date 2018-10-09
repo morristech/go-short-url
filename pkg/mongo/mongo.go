@@ -45,7 +45,7 @@ func (c *Client) Create(collection string, data interface{}) (*mongo.InsertOneRe
 	return result, nil
 }
 
-func (c *Client) FindOne(collection string, conditions map[string]string) *mongo.DocumentResult {
+func (c *Client) FindOne(collection string, conditions interface{}) *mongo.DocumentResult {
 
 	sort := findopt.Sort(bson.NewDocument(
 		bson.EC.Int32("_id", -1),

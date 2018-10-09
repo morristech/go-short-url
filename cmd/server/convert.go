@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/go-ozzo/ozzo-validation"
+	"github.com/mongodb/mongo-go-driver/bson"
 	"net/http"
 	"net/url"
 	"strings"
@@ -75,16 +76,21 @@ var Redirect = func(w http.ResponseWriter, r *http.Request) {
 		Logger.Panic("Invalid short url")
 	}
 
-	condition := make(map[string]string)
-	condition["link"] = redirectLink
+	query := bson.NewDocument(
+		bson.EC.String("link", redirectLink),
+		bson.EC.SubDocumentFromElements(
+			"expire_at",
+			bson.EC.Time("$gt", time.Now()),
+		),
+	)
 
-	result := mgo.FindOne("url", condition)
+	result := mgo.FindOne("url", query)
 
 	doc := &Url{}
 	result.Decode(doc)
 
 	if doc.Link != redirectLink {
-		Logger.Panic("Invalid short url")
+		Logger.Panic("Invalid or expired short url")
 	}
 
 	// disable redirect cache

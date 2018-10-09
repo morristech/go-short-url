@@ -1,5 +1,5 @@
 
-## Currency Exchange Server - Golang 
+## Short URL - Golang 
 
 [![Build Status](https://travis-ci.org/me-io/go-short-url.svg?branch=master)](https://travis-ci.org/me-io/go-short-url)
 [![Go Report Card](https://goreportcard.com/badge/github.com/me-io/go-short-url)](https://goreportcard.com/report/github.com/me-io/go-short-url)
@@ -18,7 +18,7 @@
 - [x] Redirect / method
 - [ ] Option to request attributes "ip range, user agent"
 - [ ] Throttling and rate limiting " on creation and redirect " 
-- [ ] Expiry time
+- [x] Expiry time
 - [ ] add custom params to the redirect url " placeholder "
 - [ ] Web hooks
 - [ ] Admin 
