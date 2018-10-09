@@ -102,7 +102,13 @@ func serveHTTP(host string, port int) {
 }
 
 func handleStatic(mux *http.ServeMux) {
-	mux.Handle(`/static`, http.FileServer(http.Dir(*staticPath)))
+	mux.Handle(
+		`/static/`,
+		http.StripPrefix(
+			"/static/",
+			http.FileServer(http.Dir(*staticPath)),
+		),
+	)
 }
 
 func initDb() *mongo.Client {
