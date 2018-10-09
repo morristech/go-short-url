@@ -62,3 +62,7 @@ func (c *Client) Count(collection string, conditions map[string]string) (int64, 
 
 	return result, err
 }
+
+func (c *Client) FindOneAndUpdate(collection string, filter interface{}, update interface{}) *mongo.DocumentResult {
+	return c.db.Collection(collection).FindOneAndUpdate(ctx.Background(), filter, update)
+}

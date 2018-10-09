@@ -47,6 +47,7 @@ var Shorten = func(w http.ResponseWriter, r *http.Request) {
 	url := &Url{}
 	url.Link = GenerateHash(lastDoc.Link)
 	url.LongUrl = convertReq.Url
+	url.ViewCount = 0
 	url.ExpireAt = time.Now().Add(time.Hour * 24)
 	url.CreatedAt = time.Now()
 
@@ -84,7 +85,14 @@ var Redirect = func(w http.ResponseWriter, r *http.Request) {
 		),
 	)
 
-	result := mgo.FindOne(CollectionShortUrl, query)
+	update := bson.NewDocument(
+		bson.EC.SubDocumentFromElements(
+			"$inc",
+			bson.EC.Int64("view_count", 1),
+		),
+	)
+
+	result := mgo.FindOneAndUpdate(CollectionShortUrl, query, update)
 
 	doc := &Url{}
 	result.Decode(doc)
