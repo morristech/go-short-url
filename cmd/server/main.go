@@ -27,7 +27,7 @@ var (
 
 	routes = map[string]func(w http.ResponseWriter, r *http.Request){
 		`/shorten`: Shorten,
-		`/r/`:      Redirect,
+		`/`:        Redirect,
 	}
 	_, filename, _, _ = runtime.Caller(0)
 	defaultStaticPath = filepath.Dir(filename) + `/public`

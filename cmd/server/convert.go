@@ -55,7 +55,7 @@ var Shorten = func(w http.ResponseWriter, r *http.Request) {
 	mgo.Create(CollectionShortUrl, url)
 
 	// update the link for response
-	url.Link = fmt.Sprintf("/r/%s", url.Link)
+	url.Link = fmt.Sprintf("/%s", url.Link)
 
 	shortenJsonVal, err := json.Marshal(url)
 	if err != nil {
@@ -69,7 +69,7 @@ var Shorten = func(w http.ResponseWriter, r *http.Request) {
 }
 
 var Redirect = func(w http.ResponseWriter, r *http.Request) {
-	urlParts := strings.Split(r.URL.String(), "r/")
+	urlParts := strings.Split(r.URL.String(), "/")
 
 	redirectLink := urlParts[len(urlParts)-1]
 
