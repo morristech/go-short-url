@@ -2,6 +2,7 @@
 <head>
     <link rel="icon" href="assets/favicon.ico">
     <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/css/app.css">
 
     <script src="assets/js/jquery-3.3.1.slim.min.js"></script>
     <script src="assets/js/popper.min.js"></script>
@@ -14,10 +15,21 @@
     <h1 class="display-4">URL Shortener</h1>
     <p class="lead">Simplify your links</p>
 
-    <div class="shorten-form form-inline">
-        <input type="text" class="form-control w-75">
-        <button class="btn btn-primary ml-2">SHORTEN</button>
+    <form class="shorten-form form-inline" method="post" ng-submit="shortenUrl()">
+        <input type="text" class="form-control w-75" ng-model="url" placeholder="Your original URL here">
+        <input class="btn btn-primary ml-2" type="submit" value="SHORTEN"/>
+    </form>
+
+    <div class="alert alert-transparent w-75" ng-class="alertbox" style="display: none;">
+        <button type="button" class="close" ng-click="closeAlertbox()">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        <h6 class="alert-heading"><a ng-model="longUrl" target="_blank" href="{{longUrl}}" id="long-url">{{longUrl}}</a>
+        </h6>
+        <a ng-model="shortUrl" target="_blank" href="{{shortUrl}}" id="short-url">{{host}}{{shortUrl}}</a>
+        <button class="btn btn-outline-primary btn-sm" id="copy" ng-click="copy()">COPY</button>
     </div>
+
 </div>
 </body>
 </html>

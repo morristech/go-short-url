@@ -55,7 +55,7 @@ var Shorten = func(w http.ResponseWriter, r *http.Request) {
 	mgo.Create(CollectionShortUrl, url)
 
 	// update the link for response
-	url.Link = fmt.Sprintf("%s/r/%s", r.Host, url.Link)
+	url.Link = fmt.Sprintf("/r/%s", url.Link)
 
 	shortenJsonVal, err := json.Marshal(url)
 	if err != nil {
